@@ -1,6 +1,8 @@
 let express = require('express') // importing express module
 let router = express.Router(); // creating router for the express app
 let user = require('../server/models/user') // importing users model from user.js
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 console.log("in auth.js");
 //router has many funtions like get, post, put, delete using that. 
 //We can specify which CRUD operation we are about to do
@@ -13,12 +15,28 @@ router.post("/login",(req,res) => {
         if(!person){ // checking whether there is any data in person
             res.json({message : "User Not Found"}) // res.json will return a data specified in json format to the user
         }
-        else if(person.password === req.body.password){  // checking password
-            res.json({message : "Logged IN"})
-        }
         else{
-            res.json({message : "password Incorrect"})
+            bcrypt.compare(req.body.password, person.password, function (err, result) {
+                if (result == true) {
+                    //res.redirect('/location');
+                    res.json({message : "Logged IN"})
+                } else {
+                //  res.send('Incorrect password');
+                 //res.redirect('/home');
+                res.json({message : "password Incorrect"})
+                }
+            });
         }
+        
+        
+        
+        
+        // else if(person.password === req.body.password){  // checking password
+        //     res.json({message : "Logged IN"})
+        // }
+        // else{
+        //     res.json({message : "password Incorrect"})
+        // }
         console.log("in login");
     })
     .catch(err => {
@@ -30,10 +48,11 @@ router.post("/login",(req,res) => {
 
 //here http://localhost:(port)/register is the url used to access the below route
 router.post("/register",(req,res) => {
+    bcrypt.hash(req.body.password, saltRounds, function (err,   hash) {
     console.log("register tab");
     let person = new user({ // creating a new object(row) for the user model with the data we passed
         username : req.body.name,
-        password : req.body.password
+        password : hash
     });
     person.save()   // saving(inserting) the object(row) in the model(table)
     .then(result => {   // result will return a success sign like the data passed to save will be returned 
@@ -43,7 +62,7 @@ router.post("/register",(req,res) => {
         })
         console.log("inside then");
 
-    })
+    })//then brackets over
     .catch(err => {
         res.json(
             {
@@ -51,7 +70,8 @@ router.post("/register",(req,res) => {
             }
         )
         console.log("inside catch"+err.message);
-    });
+    });//catch brackets over 
+});
 })
 
 console.log("out of auth");
