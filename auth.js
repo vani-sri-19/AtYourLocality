@@ -19,7 +19,11 @@ router.post("/login",(req,res) => {
             bcrypt.compare(req.body.password, person.password, function (err, result) {
                 if (result == true) {
                     //res.redirect('/location');
+                    
                     res.json({message : "Logged IN"})
+                    res.json(user.category)//check this syntax once again
+                    console.log("inside than and else");//doesnt go here
+                    console.log(user.category);
                 } else {
                 //  res.send('Incorrect password');
                  //res.redirect('/home');
@@ -52,7 +56,9 @@ router.post("/register",(req,res) => {
     console.log("register tab");
     let person = new user({ // creating a new object(row) for the user model with the data we passed
         username : req.body.name,
-        password : hash
+        password : hash,
+        place : req.body.place,
+        category : req.body.category
     });
     person.save()   // saving(inserting) the object(row) in the model(table)
     .then(result => {   // result will return a success sign like the data passed to save will be returned 

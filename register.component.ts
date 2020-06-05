@@ -12,12 +12,15 @@ export class RegisterComponent implements OnInit {
   credentials: TokenPayload = {
     //email: '',
     name: '',
-    password: ''
+    password: '',
+    place: '',
+    category: ''
   };
 
   constructor(private auth: AuthenticationService, private router: Router) {}
 
   register() {
+    alert("reg function");
     this.auth.register(this.credentials).subscribe(() => {
       this.router.navigateByUrl('/location');
     }, (err) => {

@@ -12,14 +12,21 @@ export class LoginComponent implements OnInit {
   credentials: TokenPayload = {
     //email: '',
     name: '',
-    password: ''
+    password: '',
+    place: '',
+    category: ''
   };
 
   constructor(private auth: AuthenticationService, private router: Router) {}
 
   login() {
     this.auth.login(this.credentials).subscribe(() => {
+     if(this.credentials.category=='buy'){
       this.router.navigateByUrl('/location');
+      }
+       else{
+         this.router.navigateByUrl('/home');
+       }
     }, (err) => {
       console.error(err);
     }); 

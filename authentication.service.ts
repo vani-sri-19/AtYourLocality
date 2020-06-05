@@ -31,6 +31,8 @@ export interface TokenPayload {
  // email: string;
   password: string;
   name?: string;
+  place: string;
+  category: string;
 }
 
 @Injectable()
